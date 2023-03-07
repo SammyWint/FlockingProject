@@ -21,6 +21,7 @@ public class Controller implements ActionListener {
      */
     public Controller() {
         view = new SimulationGUI(this,model);
+        model.setSim(view);
         view.setVisible(true);
         model.start();
     }

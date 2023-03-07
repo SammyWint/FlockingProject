@@ -20,12 +20,18 @@ public class CircleModel extends Thread {
     /** Pauses simulation so circles do not move */
     private boolean paused = true;
 
+    private SimulationGUI simulation;
+
     /** Default constructor. */
     public CircleModel() {
         // All circels that might appear in the graphics window are created, but are not visible.
         for (int i=0; i<20; i++) {
             circles.add(new Circle());
         }
+    }
+
+    public void setSim(SimulationGUI sim) {
+        simulation = sim;
     }
 
     @Override
@@ -35,6 +41,7 @@ public class CircleModel extends Thread {
             // Move things only if the simulation is not paused
             if (!paused) {
                 advanceCircles();
+                simulation.getContentPane().repaint();
             }
             try {
                 Thread.sleep(stepSize);
