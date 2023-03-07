@@ -99,6 +99,19 @@ public class Circle extends JPanel {
     public void step() {
         xy.x += direction.x;
         xy.y += direction.y;
+        if (xy.x < xMINRANGE ||xy.x > yMAXRANGE) {
+            direction.x *= -1;
+            randomColor();
+        }
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE ) {
+            direction.y *= -1;
+            randomColor();
+        }
+    }
+
+    public boolean overlaps(Circle other){
+        int distance = (int) Math.sqrt(Math.pow(xy.x - other.xy.x, 2) + Math.pow(xy.y - other.xy.y, 2));
+        return distance < radius + other.radius;
     }
 
     public Point getXY() {
