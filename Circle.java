@@ -134,22 +134,25 @@ public class Circle extends JPanel {
         }
     }
 
-    public Vector averagePosition(List<Circle> circles) {
+    public Vector<Double> averagePosition(List<Circle> circles) {
         int count = 0;
         double averageX;
         double averageY;
-        Vector<Double> sum = new Vector<>(0.0, 0.0);
-        for(Circle circle : circles) {
-           averageX = circle.getX();
-           averageY = circle.getY();
-           count++;
+        // Vector<Double> sum = new Vector<>(0.0, 0.0);
+        Vector<Double> sum = new Vector(2);
+        sum.add(1, 0.0);
+        sum.add(2, 0.0);
+        for (Circle circle : circles) {
+            if (circle.visible()) {
+                averageX += circle.getXY().x;
+                averageY = circle.getXY().y;
+            }
         }
         double averageCircleX = averageX / count;
         double averageCircleY = averageY / count;
-        return new Vector(averageCircleX, averageCircleY);
+        sum.add(1, averageCircleX);
+        sum.add(2, averageCircleY);
+        return sum.get(1,2);
     }
-
-
-    
 
 }
