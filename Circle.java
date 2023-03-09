@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.util.Random;
 
-/** Circle for drawing in a JFrame
+/**
+ * Circle for drawing in a JFrame
  *
  * @author Amy Larson
  */
@@ -12,9 +15,11 @@ public class Circle extends JPanel {
 
     /** Unique id (for debugging) */
     static int nextId = 0;
+
     static int getId() {
         return nextId++;
     }
+
     private int id;
 
     /** x and y bounds to keep circles in the playAreas */
@@ -25,7 +30,7 @@ public class Circle extends JPanel {
 
     /** Fixed size */
     private int radius = 30;
-    
+
     /** Color specified in RGB */
     private Color color = new Color(10, 10, 10);
 
@@ -62,7 +67,7 @@ public class Circle extends JPanel {
 
     /** Default constructor */
     public Circle() {
-        id = getId();   // for debugging
+        id = getId(); // for debugging
 
         this.setSize(radius, radius);
 
@@ -99,17 +104,17 @@ public class Circle extends JPanel {
     public void step() {
         xy.x += direction.x;
         xy.y += direction.y;
-        if (xy.x < xMINRANGE ||xy.x > yMAXRANGE) {
+        if (xy.x < xMINRANGE || xy.x > yMAXRANGE) {
             direction.x *= -1;
             randomColor();
         }
-        if (xy.y < yMINRANGE || xy.y > yMAXRANGE ) {
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
             direction.y *= -1;
             randomColor();
         }
     }
 
-    public boolean overlaps(Circle other){
+    public boolean overlaps(Circle other) {
         int distance = (int) Math.sqrt(Math.pow(xy.x - other.xy.x, 2) + Math.pow(xy.y - other.xy.y, 2));
         return distance < radius + other.radius;
     }
@@ -128,4 +133,23 @@ public class Circle extends JPanel {
             g.fillOval(0, 0, radius, radius);
         }
     }
+
+    public Vector averagePosition(List<Circle> circles) {
+        int count = 0;
+        double averageX;
+        double averageY;
+        Vector<Double> sum = new Vector<>(0.0, 0.0);
+        for(Circle circle : circles) {
+           averageX = circle.getX();
+           averageY = circle.getY();
+           count++;
+        }
+        double averageCircleX = averageX / count;
+        double averageCircleY = averageY / count;
+        return new Vector(averageCircleX, averageCircleY);
+    }
+
+
+    
+
 }
