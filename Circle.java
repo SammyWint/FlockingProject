@@ -65,6 +65,11 @@ public class Circle extends JPanel {
         visible = false;
     }
 
+    /** Return if circle is visible or not */
+    public boolean visible() {
+        return visible;
+    }
+
     /** Default constructor */
     public Circle() {
         id = getId(); // for debugging
@@ -136,23 +141,31 @@ public class Circle extends JPanel {
 
     public Vector<Double> averagePosition(List<Circle> circles) {
         int count = 0;
-        double averageX;
-        double averageY;
-        // Vector<Double> sum = new Vector<>(0.0, 0.0);
-        Vector<Double> sum = new Vector(2);
+        double averageX = 0.0;
+        double averageY = 0.0;
+
+        // Init vector with fixed size
+        Vector<Double> sum = new Vector<>(2);
+        // sum.add(1, 0.0);
+        // sum.add(2, 0.0);
+        sum.add(0, 0.0);
         sum.add(1, 0.0);
-        sum.add(2, 0.0);
         for (Circle circle : circles) {
             if (circle.visible()) {
                 averageX += circle.getXY().x;
                 averageY = circle.getXY().y;
+                count++;
             }
         }
-        double averageCircleX = averageX / count;
-        double averageCircleY = averageY / count;
-        sum.add(1, averageCircleX);
-        sum.add(2, averageCircleY);
-        return sum.get(1,2);
+        if (count > 0) {
+            double averageCircleX = averageX / count;
+            double averageCircleY = averageY / count;
+            sum.add(0, averageCircleX);
+            sum.add(1, averageCircleY);
+            // return sum.get(1,2);
+        }
+        return sum;
     }
+
 
 }
