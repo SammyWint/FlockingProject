@@ -1,10 +1,13 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-
+import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CountDownLatch;
 import java.util.Random;
 
-/** Circle for drawing in a JFrame
+/**
+ * Circle for drawing in a JFrame
  *
  * @author Amy Larson
  */
@@ -12,9 +15,11 @@ public class Circle extends JPanel {
 
     /** Unique id (for debugging) */
     static int nextId = 0;
+
     static int getId() {
         return nextId++;
     }
+
     private int id;
 
     /** x and y bounds to keep circles in the playAreas */
@@ -60,9 +65,14 @@ public class Circle extends JPanel {
         visible = false;
     }
 
+    /** Return if circle is visible or not */
+    public boolean visible() {
+        return visible;
+    }
+
     /** Default constructor */
     public Circle() {
-        id = getId();   // for debugging
+        id = getId(); // for debugging
 
         this.setSize(radius, radius);
 
@@ -109,13 +119,13 @@ public class Circle extends JPanel {
             direction.x *= -1;
             randomColor();
         }
-        if (xy.y < yMINRANGE || xy.y > yMAXRANGE ) {
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
             direction.y *= -1;
             randomColor();
         }
     }
 
-    public boolean overlaps(Circle other){
+    public boolean overlaps(Circle other) {
         int distance = (int) Math.sqrt(Math.pow(xy.x - other.xy.x, 2) + Math.pow(xy.y - other.xy.y, 2));
         return distance < radius + other.radius;
     }
@@ -141,4 +151,34 @@ public class Circle extends JPanel {
             g.fillOval(0, 0, radius, radius);
         }
     }
+
+    public Vector<Double> averagePosition(List<Circle> circles) {
+        int count = 0;
+        double averageX = 0.0;
+        double averageY = 0.0;
+
+        // Init vector with fixed size
+        Vector<Double> sum = new Vector<>(2);
+        // sum.add(1, 0.0);
+        // sum.add(2, 0.0);
+        sum.add(0, 0.0);
+        sum.add(1, 0.0);
+        for (Circle circle : circles) {
+            if (circle.visible()) {
+                averageX += circle.getXY().x;
+                averageY = circle.getXY().y;
+                count++;
+            }
+        }
+        if (count > 0) {
+            double averageCircleX = averageX / count;
+            double averageCircleY = averageY / count;
+            sum.add(0, averageCircleX);
+            sum.add(1, averageCircleY);
+            // return sum.get(1,2);
+        }
+        return sum;
+    }
+
+
 }
