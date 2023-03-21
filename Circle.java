@@ -19,12 +19,12 @@ public class Circle extends JPanel {
 
     /** x and y bounds to keep circles in the playAreas */
     private final int xMINRANGE = 60;
-    private final int xMAXRANGE = 740;
+    private final int xMAXRANGE = 1090;
     private final int yMINRANGE = 160;
     private final int yMAXRANGE = 740;
 
     /** Fixed size */
-    private int radius = 30;
+    private int radius = 15;
     
     /** Color specified in RGB */
     private Color color = new Color(10, 10, 10);
@@ -97,9 +97,15 @@ public class Circle extends JPanel {
 
     /** Move the robot the "delta" for 1 timestep */
     public void step() {
+        //For catching frozen circles
+        if((direction.x == 0)&&(direction.y == 0)){
+            direction.x = 5;
+            direction.y = 5;
+        }
+
         xy.x += direction.x;
         xy.y += direction.y;
-        if (xy.x < xMINRANGE ||xy.x > yMAXRANGE) {
+        if (xy.x < xMINRANGE ||xy.x > xMAXRANGE) {
             direction.x *= -1;
             randomColor();
         }
@@ -116,6 +122,13 @@ public class Circle extends JPanel {
 
     public Point getXY() {
         return xy;
+    }
+
+    public Point getDirection(){
+        return direction;
+    }
+    public void setDirection(Point direction){
+        this.direction = direction;
     }
 
     @Override

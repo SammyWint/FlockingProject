@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class SimulationGUI extends JFrame {
 
     // Controller GUI Components
-    private final JLabel countLabel = new JLabel("Circles (2-20): ");
+    private final JLabel countLabel = new JLabel("Circles (2-100): ");
     protected final JTextField count = new JTextField(10);
 
     private final JLabel speedLabel = new JLabel("Speed (1-5): ");
@@ -37,12 +37,12 @@ public class SimulationGUI extends JFrame {
         super("Simulation");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-        this.setSize(800,800);
+        this.setSize(1200,1200);
         // You control the layout
         this.getContentPane().setLayout(null);
 
         // Play Area
-        BoundingBox playArea = new BoundingBox(700,600);
+        BoundingBox playArea = new BoundingBox(1050,600);
         playArea.setLocation(50,150);
         getContentPane().add(playArea);
 
