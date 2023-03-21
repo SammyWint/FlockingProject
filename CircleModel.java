@@ -7,6 +7,7 @@ import java.lang.Thread;
 
 /**
  * Models a collection of circles roaming about impacting other circles.
+ * 
  * @author Amy Larson (with Erik Steinmetz)
  */
 public class CircleModel extends Thread {
@@ -21,15 +22,18 @@ public class CircleModel extends Thread {
     private boolean paused = true;
     /** Number of circles created (visible or not). */
     private final int numCircles = 100;
-    /** Strength of cohesion; ie the influence of average direction (between 0 & 1) */
+    /**
+     * Strength of cohesion; ie the influence of average direction (between 0 & 1)
+     */
     private double cohesionStrength = 0.5;
 
     private SimulationGUI simulation;
 
     /** Default constructor. */
     public CircleModel() {
-        // All circels that might appear in the graphics window are created, but are not visible.
-        for (int i=0; i<numCircles; i++) {
+        // All circels that might appear in the graphics window are created, but are not
+        // visible.
+        for (int i = 0; i < numCircles; i++) {
             circles.add(new Circle());
         }
     }
@@ -41,7 +45,7 @@ public class CircleModel extends Thread {
     @Override
     public void run() {
         // Forever run the simulation
-        while(true) {
+        while (true) {
             // Move things only if the simulation is not paused
             if (!paused) {
                 advanceCircles();
@@ -68,14 +72,35 @@ public class CircleModel extends Thread {
 
     /** Move circles to next location */
     public void advanceCircles() {
-        for (int i=0; i<count; i++) {
-            // Set cohesion **Comment this out if cohesion changes are getting in the way**
-            cohesion();
+        for (int i = 0; i < count; i++) {
             // Advance each circle
-            circles.get(i).step();
+            circles.get(i).step(circles);
+
+            // Check for collision with other circles
+            for (int j = i + 1; j < count; j++) {
+                if (circles.get(i).overlaps(circles.get(j))) {
+                    handleCollision(circles.get(i), circles.get(j));
+                }
+            }
             // Set the location, which prompts the viewer to newly display the circle
             circles.get(i).setLocation(circles.get(i).getXY().x, circles.get(i).getXY().y);
         }
+    }
+    /** Handle collision between two circles */
+    private void handleCollision(Circle c1, Circle c2) {
+        // Get current velocity and position for each circle
+        Point v1 = c1.getDirection();
+        Point v2 = c2.getDirection();
+        Point p1 = c1.getXY();
+        Point p2 = c2.getXY();
+
+        // Calculate new velocity for each circle after collision
+        Point newV1 = new Point(v2.x, v2.y);
+        Point newV2 = new Point(v1.x, v1.y);
+
+        // Update velocity for each circle
+        c1.setDirection(newV1);
+        c2.setDirection(newV2);
     }
 
 
@@ -83,29 +108,34 @@ public class CircleModel extends Thread {
         return circles;
     }
 
-    /** Modify the direction of each circle toward average, "pulling" them in the same direction */
-    private void cohesion(){
+    /**
+     * Modify the direction of each circle toward average, "pulling" them in the
+     * same direction
+     */
+    private void cohesion() {
         Point difference;
         Point newDirection;
         int xModified;
         int yModified;
-        for(int i=0; i<count; i++){
+        for (int i = 0; i < count; i++) {
             difference = calculateDifference(circles.get(i));
-            xModified = ((int)((cohesionStrength) * difference.x)) + circles.get(i).getDirection().x;
-            yModified = ((int)((cohesionStrength) * difference.y)) + circles.get(i).getDirection().y;
+            xModified = ((int) ((cohesionStrength) * difference.x)) + circles.get(i).getDirection().x;
+            yModified = ((int) ((cohesionStrength) * difference.y)) + circles.get(i).getDirection().y;
             newDirection = new Point(xModified, yModified);
             circles.get(i).setDirection(newDirection);
         }
     }
 
-    /** Returns a Point with values that represent difference between a circle's direction and the average
+    /**
+     * Returns a Point with values that represent difference between a circle's
+     * direction and the average
      * direction
      */
-    private Point calculateDifference(Circle circle){
-        
+    private Point calculateDifference(Circle circle) {
+
         // Average X and Y values for all visible circle directions
         Point avgDirection = avgDirection();
-        
+
         // Difference between the average direction value, and the given direction value
         int xDifference = avgDirection.x - circle.getDirection().x;
         int yDifference = avgDirection.y - circle.getDirection().y;
@@ -115,14 +145,14 @@ public class CircleModel extends Thread {
         return difference;
     }
 
-    //** Calculates average direction of all visible circles */
-    private Point avgDirection(){
+    // ** Calculates average direction of all visible circles */
+    private Point avgDirection() {
         int Xsum = 0;
         int Ysum = 0;
         int Xavg;
         int Yavg;
         Point avgDirection;
-        for(int i=0; i<count; i++){
+        for (int i = 0; i < count; i++) {
             Xsum += circles.get(i).getDirection().x;
             Ysum += circles.get(i).getDirection().y;
         }
@@ -143,11 +173,11 @@ public class CircleModel extends Thread {
         }
         // Reset "count" circles, making them visible
         count = circleCount;
-        for (int i=0; i<count; i++) {
+        for (int i = 0; i < count; i++) {
             circles.get(i).reset();
         }
         // Hide the rest
-        for (int i=count; i<numCircles; i++) {
+        for (int i = count; i < numCircles; i++) {
             circles.get(i).hideCircle();
         }
     }
@@ -161,8 +191,7 @@ public class CircleModel extends Thread {
         } else if (newSpeed > 5) {
             newSpeed = 5;
         }
-        stepSize = (6-newSpeed)*80; // 80 to 400ms
+        stepSize = (6 - newSpeed) * 80; // 80 to 400ms
     }
 
-    
 }
