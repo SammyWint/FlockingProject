@@ -1,10 +1,12 @@
 import java.awt.Color;
 import java.awt.Graphics;
 import javax.swing.JPanel;
-
+import java.util.Vector;
 import java.util.Random;
+import java.util.List;
 
-/** Circle for drawing in a JFrame
+/**
+ * Circle for drawing in a JFrame
  *
  * @author Amy Larson
  */
@@ -12,9 +14,11 @@ public class Circle extends JPanel {
 
     /** Unique id (for debugging) */
     static int nextId = 0;
+
     static int getId() {
         return nextId++;
     }
+
     private int id;
 
     /** x and y bounds to keep circles in the playAreas */
@@ -25,7 +29,7 @@ public class Circle extends JPanel {
 
     /** Fixed size */
     private int radius = 15;
-    
+
     /** Color specified in RGB */
     private Color color = new Color(10, 10, 10);
 
@@ -60,9 +64,13 @@ public class Circle extends JPanel {
         visible = false;
     }
 
+    public boolean visible(){
+        return visible;
+    }
+
     /** Default constructor */
     public Circle() {
-        id = getId();   // for debugging
+        id = getId(); // for debugging
 
         this.setSize(radius, radius);
 
@@ -96,26 +104,63 @@ public class Circle extends JPanel {
     }
 
     /** Move the robot the "delta" for 1 timestep */
-    public void step() {
-        //For catching frozen circles
-        if((direction.x == 0)&&(direction.y == 0)){
-            direction.x = 5;
-            direction.y = 5;
+    /** Move the robot the "delta" for 1 timestep */
+    public void step(List<Circle> circles) {
+        Point separation = new Point(0, 0);
+        Point alignment = new Point(0, 0);
+        Point cohesion = new Point(0, 0);
+        int count = 0;
+
+        for (Circle circle : circles) {
+            if (circle == this || !circle.visible()) {
+                continue;
+            }
+
+            int distance = (int) Math.sqrt(Math.pow(xy.x - circle.xy.x, 2) + Math.pow(xy.y - circle.xy.y, 2));
+            if (distance < radius + circle.radius) {
+                separation.x -= (circle.xy.x - xy.x);
+                separation.y -= (circle.xy.y - xy.y);
+                count++;
+            }
+
+            alignment.x += circle.direction.x;
+            alignment.y += circle.direction.y;
+
+            cohesion.x += circle.xy.x;
+            cohesion.y += circle.xy.y;
+            count++;
         }
+        if (count > 0) {
+            separation.x /= count;
+            separation.y /= count;
+            separation.x *= -1;
+            separation.y *= -1;
+
+            alignment.x /= count;
+            alignment.y /= count;
+
+            cohesion.x /= count;
+            cohesion.y /= count;
+            cohesion.x = (cohesion.x - xy.x) / 100;
+            cohesion.y = (cohesion.y - xy.y) / 100;
+        }
+
+        direction.x += separation.x + alignment.x + cohesion.x;
+        direction.y += separation.y + alignment.y + cohesion.y;
 
         xy.x += direction.x;
         xy.y += direction.y;
-        if (xy.x < xMINRANGE ||xy.x > xMAXRANGE) {
+
+        if (xy.x < xMINRANGE || xy.x > yMAXRANGE) {
             direction.x *= -1;
-            randomColor();
         }
-        if (xy.y < yMINRANGE || xy.y > yMAXRANGE ) {
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
             direction.y *= -1;
-            randomColor();
         }
+
     }
 
-    public boolean overlaps(Circle other){
+    public boolean overlaps(Circle other) {
         int distance = (int) Math.sqrt(Math.pow(xy.x - other.xy.x, 2) + Math.pow(xy.y - other.xy.y, 2));
         return distance < radius + other.radius;
     }
@@ -124,12 +169,6 @@ public class Circle extends JPanel {
         return xy;
     }
 
-    public Point getDirection(){
-        return direction;
-    }
-    public void setDirection(Point direction){
-        this.direction = direction;
-    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -141,4 +180,40 @@ public class Circle extends JPanel {
             g.fillOval(0, 0, radius, radius);
         }
     }
+    public Vector<Double> averagePosition(List<Circle> circles) {
+        int count = 0;
+        double averageX = 0.0;
+        double averageY = 0.0;
+
+        // Init vector with fixed size
+        Vector<Double> sum = new Vector<>(2);
+        // sum.add(1, 0.0);
+        // sum.add(2, 0.0);
+        sum.add(0, 0.0);
+        sum.add(1, 0.0);
+        for (Circle circle : circles) {
+            if (circle.visible()) {
+                averageX += circle.getXY().x;
+                averageY = circle.getXY().y;
+                count++;
+            }
+        }
+        if (count > 0) {
+            double averageCircleX = averageX / count;
+            double averageCircleY = averageY / count;
+            sum.add(0, averageCircleX);
+            sum.add(1, averageCircleY);
+            // return sum.get(1,2);
+        }
+        return sum;
+    }
+
+    public Point getDirection() {
+        return direction;
+    }
+    
+    public void setDirection(Point newDirection) {
+        direction = newDirection;
+    }
 }
+
