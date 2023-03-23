@@ -89,7 +89,7 @@ public class SimulationGUI extends JFrame {
         // For debugging bounds!
         this.dot.setBounds(50, 150, 20, 10);
         this.dot.setForeground(dotColor);
-        this.getContentPane().add(this.dot);
+        //this.getContentPane().add(this.dot);
         
         // Controller Display
 
