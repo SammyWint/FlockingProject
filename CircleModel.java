@@ -22,10 +22,15 @@ public class CircleModel extends Thread {
     private boolean paused = true;
     /** Number of circles created (visible or not). */
     private final int numCircles = 100;
-    /**
-     * Strength of cohesion; ie the influence of average direction (between 0 & 1)
-     */
-    private double cohesionStrength = 0.5;
+
+    // Strength of dynamic effects
+    
+    /** Strength of cohesion behavior */
+    private double cohesionStr = 100;
+    /** Strength of separation behavior */
+    private double separationStr = 100;
+    /** Strength of alignment behavior */
+    private double alignmentStr = 100;
 
     private SimulationGUI simulation;
 
@@ -74,7 +79,8 @@ public class CircleModel extends Thread {
     public void advanceCircles() {
         for (int i = 0; i < count; i++) {
             // Advance each circle
-            circles.get(i).step(circles);
+            //circles.get(i).step(circles);
+            circles.get(i).step(circles, cohesionStr, separationStr, alignmentStr);
 
             // Check for collision with other circles
             for (int j = i + 1; j < count; j++) {
@@ -106,24 +112,6 @@ public class CircleModel extends Thread {
 
     public ArrayList<Circle> getCircles() {
         return circles;
-    }
-
-    /**
-     * Modify the direction of each circle toward average, "pulling" them in the
-     * same direction
-     */
-    private void cohesion() {
-        Point difference;
-        Point newDirection;
-        int xModified;
-        int yModified;
-        for (int i = 0; i < count; i++) {
-            difference = calculateDifference(circles.get(i));
-            xModified = ((int) ((cohesionStrength) * difference.x)) + circles.get(i).getDirection().x;
-            yModified = ((int) ((cohesionStrength) * difference.y)) + circles.get(i).getDirection().y;
-            newDirection = new Point(xModified, yModified);
-            circles.get(i).setDirection(newDirection);
-        }
     }
 
     /**
@@ -193,5 +181,12 @@ public class CircleModel extends Thread {
         }
         stepSize = (6 - newSpeed) * 80; // 80 to 400ms
     }
+
+    /** Set strength of dynamic cohesion */
+    public void setCoStr(double v) {cohesionStr = v;}
+    /** Set strength of dynamic separation */
+    public void setSepStr(double v) {separationStr = v;}
+    /** Set strength of dynamic alignment */
+    public void setAlignStr(double v) {alignmentStr = v;}
 
 }

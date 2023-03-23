@@ -45,6 +45,19 @@ public class Controller implements ActionListener {
             // Set the speed of the simulation
             Integer speed = Integer.valueOf(this.view.speed.getText());
             model.setSpeed(speed);
+
+            // Set cohesion slider
+            Integer cohesion = Integer.valueOf(this.view.cohesion.getValue());
+            model.setCoStr(cohesion);
+
+            // Set separation slider
+            Integer separation = Integer.valueOf(this.view.separation.getValue());
+            model.setSepStr(separation);
+            
+            // Set alignment slider
+            Integer alignment = Integer.valueOf(this.view.alignment.getValue());
+            model.setAlignStr(alignment);
+            
         }
         else if( ae.getActionCommand().equals( "Stop")) {
             model.pause();

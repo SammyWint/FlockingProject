@@ -11,6 +11,7 @@ import java.util.List;
  * @author Amy Larson
  */
 public class Circle extends JPanel {
+    
 
     /** Unique id (for debugging) */
     static int nextId = 0;
@@ -21,14 +22,16 @@ public class Circle extends JPanel {
 
     private int id;
 
-    /** x and y bounds to keep circles in the playAreas */
-    private final int xMINRANGE = 60;
-    private final int xMAXRANGE = 1090;
-    private final int yMINRANGE = 160;
-    private final int yMAXRANGE = 740;
+    private SimulationGUI noSim = new SimulationGUI();
 
     /** Fixed size */
     private int radius = 15;
+
+    /** x and y bounds to keep circles in the playAreas */
+    private final int xMINRANGE = noSim.playBoxBounds[0];
+    private final int xMAXRANGE = noSim.playBoxBounds[2] + noSim.playBoxBounds[0] - radius;
+    private final int yMINRANGE = noSim.playBoxBounds[1];
+    public final int yMAXRANGE = noSim.playBoxBounds[3] + noSim.playBoxBounds[1] - radius;
 
     /** Color specified in RGB */
     private Color color = new Color(10, 10, 10);
@@ -151,12 +154,103 @@ public class Circle extends JPanel {
         xy.x += direction.x;
         xy.y += direction.y;
 
-        if (xy.x < xMINRANGE || xy.x > yMAXRANGE) {
+        if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
             direction.x *= -1;
         }
         if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
             direction.y *= -1;
         }
+
+    }
+
+    /** Secondary method for advancing circles - This one weights the 3 aspects of flocking behavior*/
+    public void step(List<Circle> circles, double coStr, double sepStr, double alignStr) {
+        Point separation = new Point(0, 0);
+        Point alignment = new Point(0, 0);
+        Point cohesion = new Point(0, 0);
+        
+        // New Stuff
+        coStr /= 100;
+        sepStr /= 100;
+        alignStr /= 100;
+        int forX;
+        int forY;
+        int limit = 5;
+        // End New Stuff
+        int count = 0;
+
+        for (Circle circle : circles) {
+            if (circle == this || !circle.visible()) {
+                continue;
+            }
+
+            int distance = (int) Math.sqrt(Math.pow(xy.x - circle.xy.x, 2) + Math.pow(xy.y - circle.xy.y, 2));
+            if (distance < radius + circle.radius) {
+                separation.x -= (circle.xy.x - xy.x);
+                separation.y -= (circle.xy.y - xy.y);
+                count++;
+            }
+
+            alignment.x += circle.direction.x;
+            alignment.y += circle.direction.y;
+
+            cohesion.x += circle.xy.x;
+            cohesion.y += circle.xy.y;
+            count++;
+        }
+        if (count > 0) {
+            separation.x /= count;
+            separation.y /= count;
+            separation.x *= -1;
+            separation.y *= -1;
+
+            alignment.x /= count;
+            alignment.y /= count;
+
+            cohesion.x /= count;
+            cohesion.y /= count;
+            cohesion.x = (cohesion.x - xy.x) / 100;
+            cohesion.y = (cohesion.y - xy.y) / 100;
+        }
+
+        
+        // New Stuff - Limiting speed (Delta values)
+        forX = (int)((separation.x * sepStr) + (alignment.x * alignStr) + (cohesion.x * coStr));
+        forY = (int)((separation.y * sepStr) + (alignment.y * alignStr) + (cohesion.y * coStr));
+        if(forX > limit) {forX = limit;}
+        if(forX < -limit) {forX = -limit;}
+        if(forY > limit) {forY = limit;}
+        if(forY < -limit) {forY = -limit;}
+        // End New Stuff
+
+        direction.x += forX;
+        direction.y += forY;
+
+        xy.x += direction.x;
+        xy.y += direction.y;
+
+        // TODO: Reset to edge
+        if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
+            if(xy.x < xMINRANGE) {xy.x = xMINRANGE;}
+            if(xy.x > xMAXRANGE) {xy.x = xMAXRANGE;}
+            direction.x *= -1;
+        }
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
+            if(xy.y < yMINRANGE) {xy.y = yMINRANGE;}
+            if(xy.y > yMAXRANGE) {xy.y = yMAXRANGE;}
+            direction.y *= -1;
+        }
+
+        /*
+         * if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
+            if(xy.x < xMINRANGE){xy.x = xMINRANGE;}
+            if(xy.x > xMAXRANGE){xy.x = xMAXRANGE;}
+        }
+        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
+            if(xy.y < yMINRANGE){xy.y = yMINRANGE;}
+            if(xy.y > yMAXRANGE){xy.y = yMAXRANGE;}
+        }
+         */
 
     }
 
