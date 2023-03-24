@@ -7,7 +7,7 @@ Made method with math for coh, sep, align - Sam
 Made method for calculating circle proximity and cleaned up code - Adnan
 Got flocking behavior to work! - Sam
 Removed hard-coded bounds for pane, cleaned up (and made a mess again), modified GUI (made sliders) - Ermias
-
+Fixed boundary issues - Ermias
 ---------------------------------------------------------------------------------------------------------------
 
     * Help & Reminders *

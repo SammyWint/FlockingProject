@@ -68,6 +68,7 @@ public class SimulationGUI extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.setSize(1200,1200);
+        this.setExtendedState(this.MAXIMIZED_BOTH);
         this.getContentPane().setBackground(backGroundColor);
 
         // You control the layout
