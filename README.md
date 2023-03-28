@@ -1,12 +1,26 @@
+README.md
+Authors: Sam Winter, Adnan Adan, Ermias Cham
 
-- ^^ Record of Changes and Modifications ^^
+This is an implementation of a flocking behavior using Circles.
 
-Started our code off with complete lab6 - Adnan
-Increased circle count and pane size of sim - Ermias
-Made method with math for coh, sep, align - Sam
-Made method for calculating circle proximity and cleaned up code - Adnan
-Got flocking behavior to work! - Sam
-Removed hard-coded bounds for pane, cleaned up (and made a mess again), modified GUI (made sliders) - Ermias
+The project contains:
+BoundingBox.java - Creates the bounds for circles to flock within
+Circle.java - Representation of a circle within the JFrame
+CircleModel.java - Models a collection of circles within a JFrame
+Controller.java - The controller class for circles
+Flocking Project.pdf - A pdf version of the project plans and who is doing what
+Point.java - Helper Class to store xy coords
+Simulation.java - The driver class for simulation 
+SimulationGUI.java - Creates the GUI application
+
+How to run:
+- Run the application by running Simulation.java
+- Enter a the number of circles at the top 2-100
+- Enter the speed for the circles from 1-5
+- Press set-up
+- Press run
+- The circles should show a flocking behavior
+
 
 ---------------------------------------------------------------------------------------------------------------
 

@@ -9,6 +9,9 @@ import java.util.List;
  * Circle for drawing in a JFrame
  *
  * @author Amy Larson
+ * @author Sam Winter
+ * @author Adnan Adan
+ * @author Ermias Cham
  */
 public class Circle extends JPanel {
     
@@ -107,7 +110,6 @@ public class Circle extends JPanel {
     }
 
     /** Move the robot the "delta" for 1 timestep */
-    /** Move the robot the "delta" for 1 timestep */
     public void step(List<Circle> circles) {
         Point separation = new Point(0, 0);
         Point alignment = new Point(0, 0);
@@ -151,7 +153,6 @@ public class Circle extends JPanel {
         direction.x += separation.x + alignment.x + cohesion.x;
         direction.y += separation.y + alignment.y + cohesion.y;
 
-        
         xy.x += direction.x;
         xy.y += direction.y;
 
