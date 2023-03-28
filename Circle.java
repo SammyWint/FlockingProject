@@ -229,7 +229,6 @@ public class Circle extends JPanel {
         xy.x += direction.x;
         xy.y += direction.y;
 
-        // TODO: Reset to edge
         if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
             if(xy.x < xMINRANGE) {xy.x = xMINRANGE;}
             if(xy.x > xMAXRANGE) {xy.x = xMAXRANGE;}
