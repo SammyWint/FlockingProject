@@ -151,6 +151,7 @@ public class Circle extends JPanel {
         direction.x += separation.x + alignment.x + cohesion.x;
         direction.y += separation.y + alignment.y + cohesion.y;
 
+        
         xy.x += direction.x;
         xy.y += direction.y;
 
