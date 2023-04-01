@@ -25,6 +25,7 @@ public class Circle extends JPanel {
 
     private int id;
 
+    // Dummy simulationGUI for retrieving playbox bound values
     private SimulationGUI noSim = new SimulationGUI();
 
     /** Fixed size */
@@ -70,6 +71,7 @@ public class Circle extends JPanel {
         visible = false;
     }
 
+    /** Returns true if circle is visible */
     public boolean visible(){
         return visible;
     }
@@ -181,8 +183,7 @@ public class Circle extends JPanel {
         xy.x += direction.x;
         xy.y += direction.y;
 
-        
-        // TODO: Reset to edge
+        // Boundary checks
         if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
             if(xy.x < xMINRANGE) {xy.x = xMINRANGE;}
             if(xy.x > xMAXRANGE) {xy.x = xMAXRANGE;}
@@ -197,11 +198,13 @@ public class Circle extends JPanel {
         
     }
 
+    // Returns true if circle is overlapping with another
     public boolean overlaps(Circle other) {
         int distance = (int) Math.sqrt(Math.pow(xy.x - other.xy.x, 2) + Math.pow(xy.y - other.xy.y, 2));
         return distance < radius + other.radius;
     }
 
+    // Returns current position
     public Point getXY() {
         return xy;
     }
@@ -217,6 +220,8 @@ public class Circle extends JPanel {
             g.fillOval(0, 0, radius, radius);
         }
     }
+
+    /** Returns average position of circles from list */
     public Vector<Double> averagePosition(List<Circle> circles) {
         int count = 0;
         double averageX = 0.0;
