@@ -4,7 +4,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-
 import java.awt.Color;
 import java.util.ArrayList;
 

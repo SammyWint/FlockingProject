@@ -9,6 +9,9 @@ import java.util.List;
  * Circle for drawing in a JFrame
  *
  * @author Amy Larson
+ * @author Sam Winter
+ * @author Adnan Adan
+ * @author Ermias Cham
  */
 public class Circle extends JPanel {
     
@@ -106,63 +109,7 @@ public class Circle extends JPanel {
         color = new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255));
     }
 
-    /** Move the robot the "delta" for 1 timestep */
-    /** Move the robot the "delta" for 1 timestep */
-    public void step(List<Circle> circles) {
-        Point separation = new Point(0, 0);
-        Point alignment = new Point(0, 0);
-        Point cohesion = new Point(0, 0);
-        int count = 0;
-
-        for (Circle circle : circles) {
-            if (circle == this || !circle.visible()) {
-                continue;
-            }
-
-            int distance = (int) Math.sqrt(Math.pow(xy.x - circle.xy.x, 2) + Math.pow(xy.y - circle.xy.y, 2));
-            if (distance < radius + circle.radius) {
-                separation.x -= (circle.xy.x - xy.x);
-                separation.y -= (circle.xy.y - xy.y);
-                count++;
-            }
-
-            alignment.x += circle.direction.x;
-            alignment.y += circle.direction.y;
-
-            cohesion.x += circle.xy.x;
-            cohesion.y += circle.xy.y;
-            count++;
-        }
-        if (count > 0) {
-            separation.x /= count;
-            separation.y /= count;
-            separation.x *= -1;
-            separation.y *= -1;
-
-            alignment.x /= count;
-            alignment.y /= count;
-
-            cohesion.x /= count;
-            cohesion.y /= count;
-            cohesion.x = (cohesion.x - xy.x) / 100;
-            cohesion.y = (cohesion.y - xy.y) / 100;
-        }
-
-        direction.x += separation.x + alignment.x + cohesion.x;
-        direction.y += separation.y + alignment.y + cohesion.y;
-
-        xy.x += direction.x;
-        xy.y += direction.y;
-
-        if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
-            direction.x *= -1;
-        }
-        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
-            direction.y *= -1;
-        }
-
-    }
-
+ 
     /** Secondary method for advancing circles - This one weights the 3 aspects of flocking behavior*/
     public void step(List<Circle> circles, double coStr, double sepStr, double alignStr) {
         Point separation = new Point(0, 0);
@@ -177,6 +124,11 @@ public class Circle extends JPanel {
         int forY;
         int limit = 5;
         // End New Stuff
+
+        //new code 3/38
+        //double mag = Math.sqrt((direction.x*direction.x)+ (direction.y+direction.y));
+        //direction.x = (int) (direction.x / mag);
+        //direction.y = (int) (direction.y/mag);
         int count = 0;
 
         for (Circle circle : circles) {
@@ -229,6 +181,7 @@ public class Circle extends JPanel {
         xy.x += direction.x;
         xy.y += direction.y;
 
+        
         // TODO: Reset to edge
         if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
             if(xy.x < xMINRANGE) {xy.x = xMINRANGE;}
@@ -240,18 +193,8 @@ public class Circle extends JPanel {
             if(xy.y > yMAXRANGE) {xy.y = yMAXRANGE;}
             direction.y *= -1;
         }
-
-        /*
-         * if (xy.x < xMINRANGE || xy.x > xMAXRANGE) {
-            if(xy.x < xMINRANGE){xy.x = xMINRANGE;}
-            if(xy.x > xMAXRANGE){xy.x = xMAXRANGE;}
-        }
-        if (xy.y < yMINRANGE || xy.y > yMAXRANGE) {
-            if(xy.y < yMINRANGE){xy.y = yMINRANGE;}
-            if(xy.y > yMAXRANGE){xy.y = yMAXRANGE;}
-        }
-         */
-
+       
+        
     }
 
     public boolean overlaps(Circle other) {
